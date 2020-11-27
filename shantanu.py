@@ -9,32 +9,36 @@ import requests
 
 
 def curlit(url):
-    #print('\nCurling...')
-    # print(url)
-    try:
-        resp = requests.get(url,headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)"}, timeout=3)
-        if resp.status_code == 200:
-            # print(resp.status_code)
-            resp2 = requests.get(url+"/zz11")
-            if resp2.status_code == 200:
-            	with open("Dead-Domains.txt", 'w') as f1:
-            		f1.write(url)
-            else:
-            	with open("Live-Domains.txt", 'w') as f1:
-            		f1.write(url)
-      
-    except Exception as e:
-        # print('Except')
-        print ('Exception')
-        # print(resp.status_code)
+	#print('\nCurling...')
+	# print(url)
+	try:
+		resp = requests.get(url,headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)"}, timeout=3)
+		print(url + ' : ' + str(resp.status_code))
+		if resp.status_code == 200:
+			resp2 = requests.get(url+"/zz11")
+			# print(url)
+			# print('First Request: ' + str(resp2))
+			if resp2.status_code != 200:
+				# print('Second Request: ' + url + ' : '+ str(resp2.status_code))
+				# print('Valid URL: ' + url)
+				with open("Live-Domains.txt", 'w') as f1:
+					f1.write(url)
+			# else:
+			# 	with open("Live-Domains.txt", 'w') as f1:
+			# 		f1.write(url)
+	  
+	except requests.exceptions.Timeout as e:
+		# print('Except')
+		print ('Timeout')
+		# print(resp.status_code)
 
 
 def spawns(urls):
-    # global results
-    print('\nGathering Source Codes...')
-    results = pool.map(curlit, urls)
-    pool.close()
-    pool.join()
+	# global results
+	print('\nGathering Source Codes...')
+	results = pool.map(curlit, urls)
+	pool.close()
+	pool.join()
 
 
 
